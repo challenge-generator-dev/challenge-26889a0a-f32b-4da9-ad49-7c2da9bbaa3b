@@ -1,0 +1,62 @@
+<div *ngIf="_orderEvent() as event" 
+     class="order-status"
+     [class.order-status--recent]="isRecent()"
+     [attr.aria-label]="'Estado de orden ' + event.orderId"
+     role="status"
+     aria-live="polite">
+  
+  <div class="order-status__header">
+    <span class="order-status__icon" aria-hidden="true">
+      {{ statusConfig().icon }}
+    </span>
+    <div class="order-status__info">
+      <span class="order-status__label">Orden</span>
+      <span class="order-status__order-id">{{ event.orderId }}</span>
+    </div>
+  </div>
+
+  <div class="order-status__body">
+    <div class="order-status__badge" 
+         [ngClass]="[statusConfig().colorClass, statusConfig().bgClass]">
+      <span class="order-status__badge-icon" aria-hidden="true">
+        {{ statusConfig().icon }}
+      </span>
+      <span class="order-status__badge-label">
+        {{ statusConfig().label }}
+      </span>
+    </div>
+
+    <div class="order-status__timestamp" aria-label="Fecha y hora">
+      <svg class="order-status__timestamp-icon" 
+           viewBox="0 0 24 24" 
+           width="16" 
+           height="16"
+           aria-hidden="true">
+        <path fill="currentColor" d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+      </svg>
+      <time [attr.datetime]="event.timestamp">{{ formattedTimestamp() }}</time>
+    </div>
+  </div>
+
+  <div *ngIf="hasDetails" class="order-status__details">
+    <details class="order-status__details-panel">
+      <summary class="order-status__details-toggle">
+        Ver detalles adicionales
+        <svg class="order-status__details-chevron" 
+             viewBox="0 0 24 24" 
+             width="16" 
+             height="16"
+             aria-hidden="true">
+          <path fill="currentColor" d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/>
+        </svg>
+      </summary>
+      <dl class="order-status__details-list">
+        <ng-container *ngFor="let item of getStatusDetails() | keyvalue">
+          <dt class="order-status__details-key">{{ item.key }}</dt>
+          <dd class="order-status__details-value">{{ item.value }}</dd>
+        </ng-container>
+      </dl>
+    </details>
+  </div>
+
+</div>

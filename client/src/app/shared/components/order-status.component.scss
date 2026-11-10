@@ -1,0 +1,247 @@
+$status-pending: #f59e0b;
+$status-processing: #3b82f6;
+$status-shipped: #8b5cf6;
+$status-delivered: #10b981;
+$status-cancelled: #ef4444;
+$status-unknown: #6b7280;
+
+$bg-pending: rgba(245, 158, 11, 0.1);
+$bg-processing: rgba(59, 130, 246, 0.1);
+$bg-shipped: rgba(139, 92, 246, 0.1);
+$bg-delivered: rgba(16, 185, 129, 0.1);
+$bg-cancelled: rgba(239, 68, 68, 0.1);
+$bg-unknown: rgba(107, 114, 128, 0.1);
+
+$border-radius: 8px;
+$transition-duration: 200ms;
+$font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+.order-status {
+  font-family: $font-family;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: $border-radius;
+  padding: 16px;
+  transition: box-shadow $transition-duration ease, transform $transition-duration ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: $status-unknown;
+    transition: background $transition-duration ease;
+  }
+
+  &--recent {
+    animation: pulse-border 2s ease-in-out infinite;
+    
+    &::before {
+      background: $status-processing;
+    }
+  }
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  &__icon {
+    font-size: 24px;
+    line-height: 1;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3f4f6;
+    border-radius: 50%;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__label {
+    font-size: 12px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+  }
+
+  &__order-id {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    font-family: 'Monaco', 'Menlo', monospace;
+  }
+
+  &__body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all $transition-duration ease;
+
+    &-icon {
+      font-size: 14px;
+    }
+
+    &-label {
+      white-space: nowrap;
+    }
+  }
+
+  &__timestamp {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #6b7280;
+
+    &-icon {
+      color: #9ca3af;
+    }
+  }
+
+  &__details {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e5e7eb;
+
+    &-panel {
+      background: #f9fafb;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    &-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: #4b5563;
+      background: transparent;
+      border: none;
+      width: 100%;
+      text-align: left;
+      transition: background $transition-duration ease;
+
+      &:hover {
+        background: #f3f4f6;
+      }
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+    }
+
+    &-chevron {
+      transition: transform $transition-duration ease;
+      color: #9ca3af;
+    }
+
+    &-panel[open] &-toggle &-chevron {
+      transform: rotate(180deg);
+    }
+
+    &-list {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 4px 12px;
+      padding: 8px 12px 12px;
+      margin: 0;
+      font-size: 13px;
+    }
+
+    &-key {
+      font-weight: 500;
+      color: #6b7280;
+    }
+
+    &-value {
+      color: #111827;
+      margin: 0;
+      word-break: break-word;
+    }
+  }
+}
+
+.status {
+  &--pending {
+    color: $status-pending;
+  }
+  &--processing {
+    color: $status-processing;
+  }
+  &--shipped {
+    color: $status-shipped;
+  }
+  &--delivered {
+    color: $status-delivered;
+  }
+  &--cancelled {
+    color: $status-cancelled;
+  }
+  &--unknown {
+    color: $status-unknown;
+  }
+}
+
+.status-bg {
+  &--pending {
+    background: $bg-pending;
+  }
+  &--processing {
+    background: $bg-processing;
+  }
+  &--shipped {
+    background: $bg-shipped;
+  }
+  &--delivered {
+    background: $bg-delivered;
+  }
+  &--cancelled {
+    background: $bg-cancelled;
+  }
+  &--unknown {
+    background: $bg-unknown;
+  }
+}
+
+@keyframes pulse-border {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0);
+  }
+}

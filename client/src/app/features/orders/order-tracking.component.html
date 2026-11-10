@@ -1,0 +1,103 @@
+<div class="order-tracking">
+  <header class="order-tracking__header">
+    <h1 class="order-tracking__title">Seguimiento de Órdenes</h1>
+    <div class="order-tracking__actions">
+      <button 
+        mat-raised-button 
+        color="primary"
+        (click)="reconnect()"
+        [disabled]="isLoading()"
+        class="order-tracking__action-btn">
+        <mat-icon>refresh</mat-icon>
+        Reconectar
+      </button>
+    </div>
+  </header>
+
+  <div class="order-tracking__status-bar">
+    <mat-card class="status-card status-card--pending">
+      <mat-card-content>
+        <mat-icon class="status-card__icon">schedule</mat-icon>
+        <span class="status-card__count">{{ pendingCount() }}</span>
+        <span class="status-card__label">Pendientes</span>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="status-card status-card--processing">
+      <mat-card-content>
+        <mat-icon class="status-card__icon">autorenew</mat-icon>
+        <span class="status-card__count">{{ processingCount() }}</span>
+        <span class="status-card__label">Procesando</span>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="status-card status-card--completed">
+      <mat-card-content>
+        <mat-icon class="status-card__icon">check_circle</mat-icon>
+        <span class="status-card__count">{{ completedCount() }}</span>
+        <span class="status-card__label">Completadas</span>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <section class="order-tracking__connection-status">
+    <div *ngIf="isLoading()" class="connection-status connection-status--loading">
+      <mat-spinner diameter="24"></mat-spinner>
+      <span>Conectando al servidor de eventos...</span>
+    </div>
+
+    <div *ngIf="connectionError()" class="connection-status connection-status--error">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ errorMessage() }}</span>
+    </div>
+
+    <div *ngIf="isConnected() && !isLoading()" class="connection-status connection-status--connected">
+      <mat-icon>wifi</mat-icon>
+      <span>Conectado - Recepciones en tiempo real activas</span>
+    </div>
+  </section>
+
+  <mat-divider></mat-divider>
+
+  <main class="order-tracking__content">
+    <div *ngIf="orderList().length === 0 && !isLoading()" class="order-tracking__empty">
+      <mat-icon class="order-tracking__empty-icon">inbox</mat-icon>
+      <p>No hay órdenes disponibles</p>
+      <p class="order-tracking__empty-hint">Los eventos de órdenes aparecerán aquí en tiempo real</p>
+    </div>
+
+    <mat-list *ngIf="orderList().length > 0" class="order-list">
+      <mat-list-item 
+        *ngFor="let order of orderList()" 
+        class="order-item"
+        [ngClass]="getStatusClass(order.status)">
+        <mat-icon matListItemIcon class="order-item__icon">
+          {{ getStatusIcon(order.status) }}
+        </mat-icon>
+        <div matListItemTitle class="order-item__title">
+          <span class="order-item__id">Orden #{{ order.orderId }}</span>
+          <mat-chip class="order-item__status-chip" [ngClass]="getStatusClass(order.status)">
+            {{ order.status }}
+          </mat-chip>
+        </div>
+        <div matListItemLine class="order-item__meta">
+          <span class="order-item__timestamp">
+            <mat-icon class="order-item__meta-icon">schedule</mat-icon>
+            {{ formatTimestamp(order.timestamp) }}
+          </span>
+        </div>
+        <div *ngIf="order.details" matListItemLine class="order-item__details">
+          <span *ngFor="let detail of getOrderDetails(order)" class="order-item__detail-tag">
+            {{ detail }}
+          </span>
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </main>
+
+  <footer class="order-tracking__footer">
+    <span class="order-tracking__footer-text">
+      Total de órdenes: {{ orderList().length }}
+    </span>
+  </footer>
+</div>
